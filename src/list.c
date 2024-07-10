@@ -35,3 +35,21 @@ void listDestroy(List *list) {
     free(list->elements);
     free(list);
 }
+
+void listAdd(List *list, char *value) {
+    if (list->size >= list->capacity) {
+        listGrow(list, list->capacity * 2);
+    }
+
+    list->elements[list->size++] = value;
+}
+
+char *listGet(List *list, int index) {
+    assert(index >= 0);
+    assert(index < list->size);
+    return list->elements[index];
+}
+
+int listCount(List *list) {
+    return list->size;
+}
