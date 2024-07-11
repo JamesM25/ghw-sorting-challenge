@@ -7,7 +7,7 @@ Given a list of Hackathons in CSV format (provided [here](https://hackp.ac/sort-
 ## Building
 
 To build this project, you must have the following:
-* cmake
+* [CMake](https://cmake.org/)
 * A compatible C/C++ compiler, e.g. [MSVC](https://visualstudio.microsoft.com/vs/features/cplusplus/) on Windows, or the GNU compiler toolchain on Linux.
 
 After all prerequisites are installed, you should create a `build` subdirectory inside the repository, and then use `cmake` to build the project:
