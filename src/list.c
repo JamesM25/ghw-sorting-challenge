@@ -5,6 +5,8 @@
 
 #define INITIAL_CAPACITY 8
 
+#define LIST_INDEX_VALID(LIST, INDEX) (INDEX >= 0 && INDEX < (LIST)->size)
+
 struct List {
     int capacity;
     int size;
@@ -30,8 +32,11 @@ List *listCreate() {
     assert(list->elements != NULL);
 
     list->capacity = INITIAL_CAPACITY;
+
+    return list;
 }
 void listDestroy(List *list) {
+    for (int i = 0; i < list->size; i++) free(list->elements[i]);
     free(list->elements);
     free(list);
 }
@@ -52,4 +57,13 @@ char *listGet(List *list, int index) {
 
 int listCount(List *list) {
     return list->size;
+}
+
+void listSwap(List *list, int a, int b) {
+    assert(LIST_INDEX_VALID(list, a));
+    assert(LIST_INDEX_VALID(list, b));
+
+    char *temp = list->elements[a];
+    list->elements[a] = list->elements[b];
+    list->elements[b] = temp;
 }

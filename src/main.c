@@ -3,10 +3,9 @@
 #include <string.h>
 #include <assert.h>
 
+#include "csv.h"
 #include "list.h"
-
-#define CSV_PATH "../hackathons.csv"
-#define COLUMN_DELIMITER ','
+#include "sort.h"
 
 static void trimNewline(char *str) {
     int end = strlen(str) - 1;
@@ -90,13 +89,34 @@ int main(int argc, char **argv) {
     
     int columnIndex = selectColumnIndex(columnNames);
 
+    List *rows = listCreate();
+
     // Read rows
     while (fgets(line, sizeof(line), fp)) {
-        printf("%s", line);
+        int rowLength = strlen(line);
+        char *row = malloc(rowLength + 1);
+        memcpy(row, line, rowLength);
+        row[rowLength] = '\0';
+        trimNewline(row);
+
+        listAdd(rows, row);
+    }
+    fclose(fp);
+
+    sortRows(rows, columnIndex);
+    for (int i = 0; i < listCount(rows); i++) {
+        char *row = listGet(rows, i);
+        List *list = getColumnsList(row);
+
+        printf("%04d: ", i);
+        for (int j = 0; j < listCount(list); j++) {
+            printf("%-30s", listGet(list, j));
+        }
+        printf("\n");
+        listDestroy(list);
     }
 
-    fclose(fp);
-    
+    listDestroy(columnNames);
 
     return 0;
 }

@@ -8,3 +8,4 @@ void listDestroy(List*);
 void listAdd(List*, char*);
 char* listGet(List*, int);
 int listCount(List*);
+void listSwap(List*, int, int);
