@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include <assert.h>
 
@@ -9,11 +10,11 @@
 static void getColumn(char *buffer, size_t bufferSize, const char *row, int column) {
     const char *ptr = row;
     for (int i = 0; i < column; i++) {
-        ptr = strchr(ptr, COLUMN_DELIMITER) + 1;
+        ptr = columnEnd(ptr, COLUMN_DELIMITER) + 1;
         assert(ptr != NULL);
     }
 
-    const char *end = strchr(ptr, COLUMN_DELIMITER);
+    const char *end = columnEnd(ptr, COLUMN_DELIMITER);
     int columnLength = end == NULL ? strlen(ptr) : (int)(end - ptr);
     if (columnLength >= bufferSize) columnLength = bufferSize - 1;
 

@@ -19,7 +19,7 @@ static List *getColumnsList(const char *columns) {
     List *list = listCreate();
 
     while (1) {
-        const char *end = strchr(ptr, COLUMN_DELIMITER);
+        const char *end = columnEnd(ptr, COLUMN_DELIMITER);
         if (end == NULL) break;
 
         int columnLength = (int)(end - ptr);
@@ -108,11 +108,12 @@ int main(int argc, char **argv) {
         char *row = listGet(rows, i);
         List *list = getColumnsList(row);
 
-        printf("%04d: ", i);
+        printf("%4d: ", i);
         for (int j = 0; j < listCount(list); j++) {
-            printf("%-30s", listGet(list, j));
+            printf("%-32s", listGet(list, j));
         }
         printf("\n");
+        
         listDestroy(list);
     }
 
