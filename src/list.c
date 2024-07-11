@@ -25,6 +25,7 @@ static void listGrow(List *list, int newCapacity) {
 
 List *listCreate() {
     List *list = malloc(sizeof(List));
+    assert(list != NULL);
 
     list->size = 0;
 
@@ -50,8 +51,7 @@ void listAdd(List *list, char *value) {
 }
 
 char *listGet(List *list, int index) {
-    assert(index >= 0);
-    assert(index < list->size);
+    assert(LIST_INDEX_VALID(list, index));
     return list->elements[index];
 }
 

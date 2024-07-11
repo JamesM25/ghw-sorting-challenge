@@ -25,6 +25,7 @@ static List *getColumnsList(const char *columns) {
         int columnLength = (int)(end - ptr);
         
         char *column = malloc(columnLength + 1);
+        assert(column != NULL);
         memcpy(column, ptr, columnLength);
         column[columnLength] = '\0';
         listAdd(list, column);
@@ -34,6 +35,7 @@ static List *getColumnsList(const char *columns) {
 
     int columnLength = strlen(ptr);
     char *column = malloc(columnLength + 1);
+    assert(column != NULL);
     memcpy(column, ptr, columnLength);
     column[columnLength] = '\0';
     trimNewline(column);
@@ -67,10 +69,17 @@ static int selectColumnIndex(List* columnNames) {
 
 int main(int argc, char **argv) {
     
-    FILE *fp = fopen(CSV_PATH, "r");
-    if (fp == NULL) {
-        printf("Unable to open file %s\n", CSV_PATH);
-        return 1;
+    char fileName[1000];
+    sprintf_s(fileName, sizeof(fileName), "%s", CSV_PATH);
+    
+    FILE *fp;
+    while (1) {
+        fp = fopen(fileName, "r");
+        if (fp != NULL) break;
+
+        printf("Unable to open file: %s\n", fileName);
+        printf("Enter a path to a CSV: ");
+        gets_s(fileName, sizeof(fileName));
     }
     
     char line[1000];
@@ -92,9 +101,18 @@ int main(int argc, char **argv) {
     List *rows = listCreate();
 
     // Read rows
+    int skippedRows = 0;
     while (fgets(line, sizeof(line), fp)) {
+        int numRowColumns = countColumns(line, COLUMN_DELIMITER);
+        if (numRowColumns != numColumns) {
+            skippedRows++;
+            continue;
+        }
+
         int rowLength = strlen(line);
-        char *row = malloc(rowLength + 1);
+        char* row = malloc(rowLength + 1);
+        assert(row != NULL);
+
         memcpy(row, line, rowLength);
         row[rowLength] = '\0';
         trimNewline(row);
@@ -102,6 +120,9 @@ int main(int argc, char **argv) {
         listAdd(rows, row);
     }
     fclose(fp);
+    if (skippedRows > 0) {
+        printf("Skipping %d invalid rows\n", skippedRows);
+    }
 
     sortRows(rows, columnIndex);
     for (int i = 0; i < listCount(rows); i++) {
